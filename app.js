@@ -5,7 +5,7 @@ var express = require('express'),
     googleapis = require('googleapis'),
     OAuth2Client = googleapis.OAuth2Client;
 
-var config = require('./config.json') || {
+var config = {
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   REDIRECT_URL: process.env.REDIRECT_URL
