@@ -3,11 +3,15 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     googleapis = require('googleapis'),
-    OAuth2Client = googleapis.OAuth2Client,
-    config = require('./config.json');
+    OAuth2Client = googleapis.OAuth2Client;
 
+var config = require('./config.json') || {
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
+  REDIRECT_URL: process.env.REDIRECT_URL
+};
 
-var oauth2Client = new OAuth2Client(config.CLIENT_ID, config.CLIENT_SECRET, config.REDIRECT_URL);
+var oauth2Client = new OAuth2Client(config.CLIENT_ID , config.CLIENT_SECRET, config.REDIRECT_URL);
 var mirrorClient;
 
 var app = express();
