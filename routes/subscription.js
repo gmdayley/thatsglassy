@@ -27,20 +27,4 @@ module.exports = function (app, oauth2Client) {
         res.send(500, err);
       })
   });
-
-  app.post('/subscribe/timeline', function(req, res) {
-    console.log('Incoming!')
-    console.log(util.inspect(req.body, { colors: true, depth: null }));
-
-    //TODO - check userActions for type
-    glassy.getTimelineItem(oauth2Client, req.body.itemId)
-      .then(function(item) {
-        console.log(item);
-      })
-      .fail(function(err) {
-        console.log(err);
-      });
-
-    res.send(200, 'ok');
-  });
 };
