@@ -29,6 +29,7 @@ module.exports = function (app, oauth2Client) {
   });
 
   app.post('/subscribe/timeline', function(req, res) {
+    console.log('Incoming!')
     console.log(util.inspect(req.body, { colors: true, depth: null }));
 
     //TODO - check userActions for type
