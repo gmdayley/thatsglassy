@@ -162,6 +162,17 @@ app.get('/subscribe/timeline', function(req, res) {
 
 });
 
+app.get('/item/:id', function(req, res) {
+  glassy.getTimelineItem(oauth2Client, req.params.id)
+    .then(function(item) {
+      console.log(item);
+      res.send(item)
+    })
+    .fail(function(err) {
+      res.send(500, err);
+    })
+});
+
 app.post('/subscriptions/timeline', function(req, res) {
   console.log('GOT AN UPDATE');
   console.log(util.inspect(req.body, { colors: true, depth: null }));
@@ -172,7 +183,7 @@ app.post('/subscriptions/timeline', function(req, res) {
       console.log(item);
     })
     .fail(function(err) {
-      console.err(err);
+      console.log(err);
     });
 
   res.send(200, 'ok');
