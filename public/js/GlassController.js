@@ -4,7 +4,7 @@ function GlassCtrl($scope, $http) {
 
 
   $scope.sendHello = function() {
-    $http.post('/timeline/insert/html', {
+    $http.post('/timeline/insert/text', {
       message: $scope.text
     }).success(function(){
         console.log('success');
