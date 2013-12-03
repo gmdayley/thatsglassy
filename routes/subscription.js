@@ -15,12 +15,16 @@ module.exports = function (app, oauth2Client) {
       .fail(function(err) {
         res.send(500, err);
       })
-
   });
 
   app.get('/subscribe/list', function(req, res) {
-    glassy.listSubscriptions(oauth2Client);
-    res.send('ok');
+    glassy.listSubscriptions(oauth2Client)
+      .then(function(data) {
+        res.json(data);
+      })
+      .fail(function(err) {
+        res.send(500, err);
+      })
   });
 
   app.post('/subscribe/timeline', function(req, res) {
