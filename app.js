@@ -2,6 +2,7 @@ var express = require('express'),
     routes = require('./routes'),
     http = require('http'),
     path = require('path'),
+    util = require('util'),
     googleapis = require('googleapis'),
     OAuth2Client = googleapis.OAuth2Client,
     glassy = require('./glassy');
@@ -163,8 +164,7 @@ app.get('/subscribe/timeline', function(req, res) {
 
 app.post('/subscriptions/timeline', function(req, res) {
   console.log('GOT AN UPDATE');
-  console.log(req.body);
-  console.log(req.body.userActions[0].payload);
+  console.log(util.inspect(req.body, { colors: true, depth: null }));
   res.send(200, 'ok');
 });
 
