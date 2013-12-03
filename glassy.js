@@ -2,6 +2,11 @@ var Q = require('q');
 var googleapis = require('googleapis');
 var mirrorClient;
 
+/**
+ * Loads the Google Mirror api if needed and returns it
+ *
+ * @returns {promise|*|Q.promise}
+ */
 function getMirrorClient() {
   var d = Q.defer();
 
@@ -24,6 +29,12 @@ function getMirrorClient() {
   return d.promise;
 }
 
+/**
+ * Gets the latest known location of the users glass device
+ *
+ * @param authClient
+ * @returns {promise|*|Q.promise}
+ */
 function getLatestLocation(authClient) {
   var d = Q.defer();
 
@@ -46,6 +57,12 @@ function getLatestLocation(authClient) {
   return d.promise;
 }
 
+/**
+ * Gets all timeline items for this glass app
+ *
+ * @param authClient
+ * @returns {promise|*|Q.promise}
+ */
 function getTimelineItems(authClient) {
   var d = Q.defer();
 
@@ -65,6 +82,13 @@ function getTimelineItems(authClient) {
   return d.promise;
 }
 
+/**
+ * Inserts a text timeline card into the users timeline
+ *
+ * @param authClient
+ * @param text
+ * @returns {promise|*|Q.promise}
+ */
 function insertTextTimelineItem(authClient, text) {
   var d = Q.defer();
 
@@ -96,6 +120,13 @@ function insertTextTimelineItem(authClient, text) {
   return d.promise;
 }
 
+/**
+ * Inserts an html card into the users timeline
+ *
+ * @param authClient
+ * @param html
+ * @returns {promise|*|Q.promise}
+ */
 function insertHtmlTimelineItem(authClient, html) {
   var d = Q.defer();
 
@@ -121,7 +152,12 @@ function insertHtmlTimelineItem(authClient, html) {
   return d.promise;
 }
 
-
+/**
+ * Subscribe to the users timeline events for this app
+ *
+ * @param authClient
+ * @returns {promise|*|Q.promise}
+ */
 function subscribe(authClient) {
   var d = Q.defer();
 
@@ -143,7 +179,14 @@ function subscribe(authClient) {
   return d.promise;
 }
 
+
+/**
+ * Unsubscribe to a users timeline
+ *
+ * @param authClient
+ */
 function unsubscribe(authClient) {
+  var d = Q.defer();
 
   getMirrorClient().then(function(client) {
     client.mirror.subscriptions
@@ -153,33 +196,50 @@ function unsubscribe(authClient) {
       .withAuthClient(authClient)
       .execute(function(err, data) {
         if(!!err) {
-          console.log(err)
+          d.reject(err);
         } else {
-          console.log(data);
+          d.resolve(data);
         }
       });
   });
+
+  return d.promise;
 }
 
+/**
+ * List current subscriptions
+ *
+ * @param authClient
+ * @returns {promise|*|Q.promise}
+ */
+function listSubscriptions(authClient) {
+  var d = Q.defer();
 
-function subscriptionList(authClient) {
   getMirrorClient().then(function(client) {
     client.mirror.subscriptions
       .list()
       .withAuthClient(authClient)
       .execute(function(err, data) {
         if(!!err) {
-          console.log(err)
+          d.reject(err);
         } else {
-          console.log(data);
+          d.resolve(data);
         }
       });
   });
+
+  return d.promise;
 }
 
+/**
+ * Get a timeline item by id
+ *
+ * @param authClient
+ * @param id
+ * @returns {promise|*|Q.promise}
+ */
 function getTimelineItem(authClient, id) {
   var d = Q.defer();
-  console.log("GETTING TIMELINE ITEM: " + id);
 
   getMirrorClient().then(function(client) {
     client.mirror.timeline
@@ -208,7 +268,7 @@ module.exports = {
   insertHtmlTimelineItem: insertHtmlTimelineItem,
   subscribe: subscribe,
   unsubscribe: unsubscribe,
-  listSubscriptions: subscriptionList
+  listSubscriptions: listSubscriptions
 };
 
 

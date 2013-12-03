@@ -3,12 +3,17 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
     <script src="/js/GlassController.js"></script>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
 <div ng-controller="GlassCtrl">
     <input type="text" ng-model="text">
-    <button ng-click="sendHello()">Insert Text</button>
+    <button ng-click="sendText()">Insert Text</button>
+    <button ng-click="sendHtml()">Insert Html</button>
+    <button ng-click="getLocation()">Get Location</button>
+    <button ng-click="sendFlickr()">Send Flickr</button>
 </div>
 
 </body>

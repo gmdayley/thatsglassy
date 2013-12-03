@@ -1,13 +1,10 @@
 var express = require('express'),
-    routes = require('./routes'),
     http = require('http'),
     path = require('path'),
-    util = require('util'),
+    fs = require('fs'),
     googleapis = require('googleapis'),
-    OAuth2Client = googleapis.OAuth2Client,
-    glassy = require('./glassy');
+    OAuth2Client = googleapis.OAuth2Client;
 
-var rndFlickr = require('./flickr-rnd');
 
 var config = {
   CLIENT_ID: process.env.CLIENT_ID,
@@ -27,167 +24,38 @@ app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
   if(oauth2Client.credentials) {
+    // Authenticated, carry on :)
     res.sendfile('index.html');
   } else {
+    // Redirect to Google, authenticate
     var url = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: 'https://www.googleapis.com/auth/glass.timeline https://www.googleapis.com/auth/glass.location'
     });
-    console.log(url);
     res.redirect(url)
   }
 });
 
 app.get('/oauth2callback', function(req, res){
+  // Trade auth code for access token
   oauth2Client.getToken(req.query.code, function(err, tokens){
     if (!!err){
-      failure(err);
       res.send(500, err);
     } else {
+      // Success!
       oauth2Client.credentials = tokens;
+
+      // Load all other routes
+      fs.readdirSync(__dirname + '/routes').forEach(function(file) {
+        require('./routes/' + file)(app, oauth2Client);
+      });
+
+      // Redirect back
       res.redirect('/');
     }
   });
 });
 
-
-app.get('/timeline', function (req, res) {
-  glassy.getTimelineItems(oauth2Client)
-    .then(function(items) {
-      res.json(items)
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-});
-
-app.post('/timeline/insert/text', function(req, res) {
-  glassy.insertTextTimelineItem(oauth2Client, req.body.message)
-    .then(function() {
-      res.send('ok');
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-});
-
-app.get('/location', function(req, res){
-  glassy.getLatestLocation(oauth2Client)
-    .then(function(location) {
-      res.json(location);
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-});
-
-app.get('/flickr', function(req, res) {
-  glassy.getLatestLocation(oauth2Client)
-    .then(function(location) {
-      rndFlickr.randomFromLatLng(location.lat, location.lng)
-        .then(function(image) {
-          res.send(image);
-
-          var html='<article class="photo">' +
-            '<img src="' + image.url + '" width="100%" height="100%">' +
-            '<div class="photo-overlay"/>' +
-            '<section>' +
-            '<p class="text-auto-size">'+ image.description + '</p>' +
-            '</section>' +
-            '</article>';
-
-          glassy.insertHtmlTimelineItem(oauth2Client, html)
-            .then(function() {
-              res.send(image);
-            })
-        })
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-});
-
-app.get('/tom', function(req, res) {
-  var html = '<article>' +
-    '<figure>' +
-    '<img src="https://mirror-api-playground.appspot.com/links/lincoln.png">' +
-    '</figure>' +
-    '<section>' +
-    '<table class="text-small align-justify">' +
-      '<tbody>' +
-        '<tr>' +
-          '<td>Born</td>' +
-          '<td>Feb 12, 1809</td>' +
-        '</tr>' +
-        '<tr>' +
-          '<td>Died</td>' +
-          '<td>Apr 15, 1865</td>' +
-        '</tr>' +
-        '<tr>' +
-          '<td>Height</td>' +
-          '<td>6\' 4"</td>' +
-        '</tr>' +
-      '</tbody>' +
-    '</table>' +
-    '</section>' +
-  '</article>';
-
-
-  glassy.insertHtmlTimelineItem(oauth2Client, html)
-    .then(function() {
-      res.send('ok');
-    })
-});
-
-app.get('/unsub', function(req, res) {
-  glassy.unsubscribe(oauth2Client);
-
-  res.send('ok');
-});
-
-app.get('/slist', function(req, res) {
-  glassy.listSubscriptions(oauth2Client);
-
-  res.send('ok');
-});
-
-app.get('/subscribe/timeline', function(req, res) {
-  glassy.subscribe(oauth2Client)
-    .then(function() {
-      res.send('ok');
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-
-});
-
-app.get('/item/:id', function(req, res) {
-  glassy.getTimelineItem(oauth2Client, req.params.id)
-    .then(function(item) {
-      console.log(item);
-      res.send(item)
-    })
-    .fail(function(err) {
-      res.send(500, err);
-    })
-});
-
-app.post('/subscriptions/timeline', function(req, res) {
-  console.log('GOT AN UPDATE');
-  console.log(util.inspect(req.body, { colors: true, depth: null }));
-
-  //TODO - check userActions for type
-  glassy.getTimelineItem(oauth2Client, req.body.itemId)
-    .then(function(item) {
-      console.log(item);
-    })
-    .fail(function(err) {
-      console.log(err);
-    });
-
-  res.send(200, 'ok');
-});
 
 // Start server
 http.createServer(app).listen(app.get('port'), function(){
