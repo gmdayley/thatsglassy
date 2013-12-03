@@ -2,7 +2,7 @@ var glassy = require('../glassy');
 
 module.exports = function (app, oauth2Client) {
 
-  app.delete('/subscribe/timeline', function(req, res) {
+  app.get('/unsubscribe/timeline', function(req, res) {
     glassy.unsubscribe(oauth2Client);
     res.send('ok');
   });
