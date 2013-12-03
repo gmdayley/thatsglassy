@@ -179,6 +179,7 @@ function subscriptionList(authClient) {
 
 function getTimelineItem(authClient, id) {
   var d = Q.defer();
+  console.log("GETTING TIMELINE ITEM: " + id);
 
   getMirrorClient().then(function(client) {
     client.mirror.timeline
@@ -188,6 +189,7 @@ function getTimelineItem(authClient, id) {
       .withAuthClient(authClient)
       .execute(function(err, data) {
         if(!!err) {
+          console.log(err);
           d.reject(err);
         } else {
           d.resolve(data);
