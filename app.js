@@ -138,6 +138,18 @@ app.get('/tom', function(req, res) {
     })
 });
 
+app.get('/unsub', function(req, res) {
+  glassy.unsubscribe(oauth2Client);
+
+  res.send('ok');
+});
+
+app.get('/slist', function(req, res) {
+  glassy.listSubscriptions(oauth2Client);
+
+  res.send('ok');
+});
+
 app.get('/subscribe/timeline', function(req, res) {
   glassy.subscribe(oauth2Client)
     .then(function() {

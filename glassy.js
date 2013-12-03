@@ -143,12 +143,49 @@ function subscribe(authClient) {
   return d.promise;
 }
 
+function unsubscribe(authClient) {
+
+  getMirrorClient().then(function(client) {
+    client.mirror.subscriptions
+      .delete({
+        id: 'timeline'
+      })
+      .withAuthClient(authClient)
+      .execute(function(err, data) {
+        if(!!err) {
+          console.log(err)
+        } else {
+          console.log(data);
+        }
+      });
+  });
+}
+
+
+function subscriptionList(authClient) {
+  getMirrorClient().then(function(client) {
+    client.mirror.subscriptions
+      .list()
+      .withAuthClient(authClient)
+      .execute(function(err, data) {
+        if(!!err) {
+          console.log(err)
+        } else {
+          console.log(data);
+        }
+      });
+  });
+}
+
+
 module.exports = {
   getTimelineItems: getTimelineItems,
   getLatestLocation: getLatestLocation,
   insertTextTimelineItem: insertTextTimelineItem,
   insertHtmlTimelineItem: insertHtmlTimelineItem,
-  subscribe: subscribe
+  subscribe: subscribe,
+  unsubscribe: unsubscribe,
+  listSubscriptions: subscriptionList
 };
 
 
