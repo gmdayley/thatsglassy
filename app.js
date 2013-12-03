@@ -164,6 +164,7 @@ app.get('/subscribe/timeline', function(req, res) {
 app.post('/subscriptions/timeline', function(req, res) {
   console.log('GOT AN UPDATE');
   console.log(req.body);
+  console.log(req.body.userActions[0].payload);
   res.send(200, 'ok');
 });
 
