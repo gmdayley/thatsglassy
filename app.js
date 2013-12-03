@@ -165,6 +165,16 @@ app.get('/subscribe/timeline', function(req, res) {
 app.post('/subscriptions/timeline', function(req, res) {
   console.log('GOT AN UPDATE');
   console.log(util.inspect(req.body, { colors: true, depth: null }));
+
+  //TODO - check userActions for type
+  glassy.getTimelineItem(oauth2Client, req.body.itemId)
+    .then(function(item) {
+      console.log(item);
+    })
+    .fail(function(err) {
+      console.err(err);
+    });
+
   res.send(200, 'ok');
 });
 

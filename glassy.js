@@ -177,9 +177,30 @@ function subscriptionList(authClient) {
   });
 }
 
+function getTimelineItem(authClient, id) {
+  var d = Q.defer();
+
+  getMirrorClient().then(function(client) {
+    client.mirror.timeline
+      .get({
+        id: id
+      })
+      .withAuthClient(authClient)
+      .execute(function(err, data) {
+        if(!!err) {
+          d.reject(err);
+        } else {
+          d.resolve(data);
+        }
+      });
+  });
+  return d.promise;
+}
+
 
 module.exports = {
   getTimelineItems: getTimelineItems,
+  getTimelineItem: getTimelineItem,
   getLatestLocation: getLatestLocation,
   insertTextTimelineItem: insertTextTimelineItem,
   insertHtmlTimelineItem: insertHtmlTimelineItem,
