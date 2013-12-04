@@ -26,22 +26,22 @@ module.exports = function (app, oauth2Client) {
   app.post('/timeline/insert/html', function(req, res) {
     var html = '<article>' +
       '<figure>' +
-      '<img src="https://mirror-api-playground.appspot.com/links/lincoln.png">' +
+      '<img src="http://thatsglassy.herokuapp.com/img/person.jpg">' +
       '</figure>' +
       '<section>' +
       '<table class="text-small align-justify">' +
       '<tbody>' +
       '<tr>' +
       '<td>Born</td>' +
-      '<td>Feb 12, 1809</td>' +
+      '<td>Feb 12, 1975</td>' +
       '</tr>' +
       '<tr>' +
       '<td>Died</td>' +
-      '<td>Apr 15, 1865</td>' +
+      '<td>by Laser, Dec 4, 2013</td>' +
       '</tr>' +
       '<tr>' +
-      '<td>Height</td>' +
-      '<td>6\' 4"</td>' +
+      '<td>Likes</td>' +
+      '<td>Cool Tech, Unicorns</td>' +
       '</tr>' +
       '</tbody>' +
       '</table>' +
