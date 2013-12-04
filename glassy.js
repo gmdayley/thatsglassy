@@ -259,7 +259,6 @@ function getTimelineItem(authClient, id) {
   return d.promise;
 }
 
-
 module.exports = {
   getTimelineItems: getTimelineItems,
   getTimelineItem: getTimelineItem,

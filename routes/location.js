@@ -1,5 +1,5 @@
 var glassy = require('../glassy');
-var rndFlickr = require('../flickr-rnd');
+var flickr = require('../flickr-rnd');
 
 module.exports = function (app, oauth2Client) {
 
@@ -16,7 +16,7 @@ module.exports = function (app, oauth2Client) {
   app.post('/flickr', function(req, res) {
     glassy.getLatestLocation(oauth2Client)
       .then(function(location) {
-        rndFlickr.randomFromLatLng(location.lat, location.lng)
+        flickr.randomFromLatLng(location.lat, location.lng)
           .then(function(image) {
             res.send(image);
 

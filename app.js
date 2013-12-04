@@ -16,12 +16,14 @@ var oauth2Client = new OAuth2Client(config.CLIENT_ID , config.CLIENT_SECRET, con
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
+
+// Middleware
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use("/", express.static(path.join(__dirname, 'public')));
 
-
+// OAuth
 app.get('/', function(req, res) {
   if(oauth2Client.credentials) {
     // Authenticated, carry on :)
